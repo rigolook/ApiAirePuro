@@ -1,5 +1,8 @@
+using Airepuro.Configurations;
+using Airepuro.Api.Services;
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("MongoDatabase"));
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -7,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<SensorAireServices>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
