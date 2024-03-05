@@ -10,7 +10,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<SensorAireServices>();
+//builder.Services.AddSingleton<SensorAireServices>();
+//mas seguro este
+builder.Services.AddScoped<SensorAireServices>(); //deben agregarse mas si hay mas colecciones en la api tambien un modelo, servicio y controlador
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

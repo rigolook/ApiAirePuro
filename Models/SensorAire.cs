@@ -11,7 +11,7 @@ namespace Airepuro.Api.Models
         public string Id { get; set; } = string.Empty;
 
         [BsonElement("GasDetectado")]
-        public string GasDetectado { get; set; } = string.Empty;
+        public bool GasDetectado { get; set; }
         [BsonElement("Ubicacion")]
         public string Ubicacion { get; set; } = string.Empty;
         [BsonElement("NombreGas")]
