@@ -12,7 +12,9 @@ builder.Services.AddSwaggerGen();
 
 //builder.Services.AddSingleton<SensorAireServices>();
 //mas seguro este
-builder.Services.AddScoped<SensorAireServices>(); //deben agregarse mas si hay mas colecciones en la api tambien un modelo, servicio y controlador
+builder.Services.AddScoped<SensorAireServices>(); 
+builder.Services.AddScoped<SensorTemperaturaService>(); 
+//builder.Services.AddScoped<SensorAireServices>(); //deben agregarse mas si hay mas colecciones en la api tambien un modelo, servicio y controlador
 
 var app = builder.Build();
 
