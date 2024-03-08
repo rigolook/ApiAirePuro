@@ -1,5 +1,7 @@
 using Airepuro.Configurations;
 using Airepuro.Api.Services;
+using Airepuro.Api.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("MongoDatabase"));
@@ -14,7 +16,9 @@ builder.Services.AddSwaggerGen();
 //mas seguro este
 builder.Services.AddScoped<SensorAireServices>(); 
 builder.Services.AddScoped<SensorTemperaturaService>(); 
-//builder.Services.AddScoped<SensorAireServices>(); //deben agregarse mas si hay mas colecciones en la api tambien un modelo, servicio y controlador
+builder.Services.AddScoped<UsuarioServices>(); //deben agregarse mas si hay mas colecciones en la api tambien un modelo, servicio y controlador
+builder.Services.AddScoped<VentiladorServices>(); 
+builder.Services.AddScoped<VhistorialServices>(); 
 
 var app = builder.Build();
 

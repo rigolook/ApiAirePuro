@@ -55,7 +55,7 @@ public class SensorAireController : ControllerBase
         return Ok();
     }
 
-    [HttpPut("DriverToUpdate")]
+    [HttpPut("SensorAireToUpdate")]
     public async Task<IActionResult> UpdateSensorAire(SensorAire SensorAireToUpdate)
     {
         if (SensorAireToUpdate == null)

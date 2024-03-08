@@ -18,7 +18,7 @@ namespace Airepuro.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSensorAires()
+        public async Task<IActionResult> GetSensorTemperatura()
         {
             var SensorTemperatura = await _SensorTemperaturaService.GetAsync();
             return Ok(SensorTemperatura);
@@ -54,7 +54,7 @@ namespace Airepuro.Api.Controllers
             return Ok();
         }
 
-        [HttpPut("DriverToUpdate")]
+        [HttpPut("SensorTemperaturaToUpdate")]
         public async Task<IActionResult> UpdateSensorTemperatura(SensorTemperatura SensorAireToUpdate)
         {
             if (SensorAireToUpdate == null)
