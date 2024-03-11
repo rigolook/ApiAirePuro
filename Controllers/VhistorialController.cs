@@ -119,6 +119,9 @@ namespace Airepuro.Api.Controllers
         public async Task<IActionResult> GetVentiladorById(string idToSearch)
         {
             var ventiladores = await _VhistorialServices.GetVhistorialById(idToSearch);
+
+
+
             return Ok(ventiladores);
         }
     }
