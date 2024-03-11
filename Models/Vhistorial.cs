@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using Airepuro.Api.Models;
 
 namespace Airepuro.Api.Models
 {
@@ -15,13 +16,29 @@ namespace Airepuro.Api.Models
         public string Fecha { get; set; } = string.Empty;
         [BsonElement("Hora")]
         public string Hora { get; set; } = string.Empty;
-        [BsonElement("SensorAire")]
-        public object SensorAire { get; set; }
-        [BsonElement("SensorTemperatura")]
-        public object SensorTemperatura { get; set; }
-        [BsonElement("Ventilador")]
-        public object Ventilador { get; set; }
+        
+        [BsonElement("SensorAireId")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string SensorAireId { get; set; } = string.Empty;
 
 
+
+        [BsonElement("SensorTemperaturaId")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string SensorTemperaturaId { get; set; } = string.Empty;
+
+
+        [BsonElement("VentiladorId")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string VentiladorId { get; set; } = string.Empty;
+
+        [BsonIgnore]
+        public SensorAire? SensorAire { get; set; }
+        [BsonIgnore]
+        public SensorTemperatura? SensorTemperatura { get;set; }
+        [BsonIgnore]
+        public Ventilador? Ventilador { get;set; }
     }
-}
+}    
+    
+

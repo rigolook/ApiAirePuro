@@ -14,40 +14,76 @@ namespace Airepuro.Api.Controllers
         private readonly SensorAireServices _sensorAireServices; // Servicio para manejar los sensores de aire
         private readonly SensorTemperaturaService _sensorTemperaturaServices; // Servicio para manejar los sensores de temperatura
         private readonly VentiladorServices _ventiladorServices; // Servicio para manejar los ventiladores
-        public VhistorialController(ILogger<VhistorialController> logger, VhistorialServices vHistorialServices)
+        public VhistorialController(ILogger<VhistorialController> logger, VhistorialServices vHistorialServices, SensorAireServices sensorAireServices, SensorTemperaturaService sensorTemperaturaService, VentiladorServices ventiladorServices)
         {
             _logger = logger;
             _VhistorialServices = vHistorialServices;
+            _sensorAireServices = sensorAireServices;
+            _sensorTemperaturaServices = sensorTemperaturaService;
+            _ventiladorServices = ventiladorServices;
         }
 
-        [HttpGet]
+        [HttpGet("Listar")]
         public async Task<IActionResult> GetVhistorial()
         {
-            var Vhistorial = await _VhistorialServices.GetAsync();
-            return Ok(Vhistorial);
+            try
+            {
+                var vhistorial = await _VhistorialServices.GetAsync();
+                return Ok(vhistorial);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener los productos");
+                return StatusCode(500, "Error interno del servidor. Por favor, inténtalo de nuevo más tarde.");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> InsertVhistorial([FromBody] Vhistorial vhistorialToInsert)
         {
-            if (vhistorialToInsert == null)
-                return BadRequest();
-            if (vhistorialToInsert.Titulo == string.Empty)
-                ModelState.AddModelError("Titulo del registro", "Ingrese algun titulo, no deje vacio.");
-            if (vhistorialToInsert.Fecha == string.Empty)
-                ModelState.AddModelError("Fecha del registro", "Escriba la fecha correspondiente, dia, mes y año. ejemplo preferible:'20/12/2024'.");
-            if (vhistorialToInsert.Hora == string.Empty)
-                ModelState.AddModelError("Hora del registro", "Ingrese una hora estimada; ejemplo: 6:00 p.m");
-           
-            if(vhistorialToInsert.SensorAire == string.Empty && vhistorialToInsert.SensorAire.ToString().Length == 24)
-                ModelState.AddModelError("Sensor de aire", "Ingrese un id de 24 caracteres no mas no menos; ejemplo: '65e0d6b9730bfdf77944a477'");
-            if (vhistorialToInsert.SensorTemperatura == string.Empty && vhistorialToInsert.SensorTemperatura.ToString().Length == 24)
-                ModelState.AddModelError("Sensor de temperatura", "Ingrese un id de 24 caracteres no mas no menos; ejemplo: '65e0d6b9730bfdf77944a477'");
-            if (vhistorialToInsert.Ventilador == string.Empty && vhistorialToInsert.Ventilador.ToString().Length == 24)
-                ModelState.AddModelError("Ventilador", "Ingrese un id de 24 caracteres no mas no menos; ejemplo: '65e0d6b9730bfdf77944a477'");
+            try
+            {
+                if (vhistorialToInsert == null)
+                    return BadRequest("El producto no puede ser null");
+                if (vhistorialToInsert.Titulo == string.Empty)
+                    return BadRequest("El titulo del registro no puede estar vacío");
+                if (vhistorialToInsert.Fecha == string.Empty)
+                    ModelState.AddModelError("Fecha del registro", "Escriba la fecha correspondiente, dia, mes y año. ejemplo preferible:'20/12/2024'.");
+                if (vhistorialToInsert.Hora == string.Empty)
+                    ModelState.AddModelError("Hora del registro", "Ingrese una hora estimada; ejemplo: 6:00 p.m");
 
-            await _VhistorialServices.InsertVhistorial(vhistorialToInsert);
-            return Created("Created", true);
+                if (!string.IsNullOrEmpty(vhistorialToInsert.SensorAireId))
+                {
+                    var sensoraire = await _sensorAireServices.GetSensorAireById(vhistorialToInsert.SensorAireId);
+                    if (sensoraire == null)
+                        return BadRequest("El sensor de aire no existe");
+                }
+                if (!string.IsNullOrEmpty(vhistorialToInsert.SensorTemperaturaId))
+                {
+                    var sensortemperatura = await _sensorTemperaturaServices.GetSensorTemperaturaById(vhistorialToInsert.SensorTemperaturaId);
+                    if (sensortemperatura == null)
+                        return BadRequest("El sensor de temperatura no existe");
+                }
+                if (!string.IsNullOrEmpty(vhistorialToInsert.VentiladorId))
+                {
+                    var ventilador = await _ventiladorServices.GetVentiladorById(vhistorialToInsert.VentiladorId);
+                    if (ventilador == null)
+                        return BadRequest("El ventilador no existe");
+                }
+
+
+                await _VhistorialServices.InsertVhistorial(vhistorialToInsert);
+
+                // Obtiene el nombre del proveedor después de insertar el producto
+                vhistorialToInsert = await _VhistorialServices.GetVhistorialById(vhistorialToInsert.Id);
+
+                return Created("Created", vhistorialToInsert);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear el producto");
+                return StatusCode(500, "Error interno del servidor. Por favor, inténtalo de nuevo más tarde.");
+            }
         }
 
         [HttpDelete("ID")]
@@ -73,13 +109,7 @@ namespace Airepuro.Api.Controllers
                 ModelState.AddModelError("Fecha del registro", "Escriba la fecha correspondiente, dia, mes y año. ejemplo preferible:'20/12/2024'.");
             if (VhistorialToUpdate.Hora == string.Empty)
                 ModelState.AddModelError("Hora del registro", "Ingrese una hora estimada; ejemplo: 6:00 p.m");
-            if (VhistorialToUpdate.SensorAire == string.Empty && VhistorialToUpdate.SensorAire.ToString().Length == 24)
-                ModelState.AddModelError("Sensor de aire", "Ingrese un id de 24 caracteres no mas no menos; ejemplo: '65e0d6b9730bfdf77944a477'");
-            if (VhistorialToUpdate.SensorTemperatura == string.Empty && VhistorialToUpdate.SensorTemperatura.ToString().Length == 24)
-                ModelState.AddModelError("Sensor de temperatura", "Ingrese un id de 24 caracteres no mas no menos; ejemplo: '65e0d6b9730bfdf77944a477'");
-            if (VhistorialToUpdate.Ventilador == string.Empty && VhistorialToUpdate.Ventilador.ToString().Length == 24)
-                ModelState.AddModelError("Ventilador", "Ingrese un id de 24 caracteres no mas no menos; ejemplo: '65e0d6b9730bfdf77944a477'");
-
+          
             await _VhistorialServices.UpdateVhistorial(VhistorialToUpdate);
 
             return Ok();
