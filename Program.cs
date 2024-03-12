@@ -19,7 +19,9 @@ builder.Services.AddScoped<SensorTemperaturaService>();
 builder.Services.AddScoped<UsuarioServices>(); //deben agregarse mas si hay mas colecciones en la api tambien un modelo, servicio y controlador
 builder.Services.AddScoped<VentiladorServices>(); 
 builder.Services.AddScoped<VhistorialServices>(); 
-builder.Services.AddScoped<Vlogin>(); 
+builder.Services.AddScoped<VloginServices>(); 
+builder.Services.AddScoped<VmonitoreoServices>(); 
+builder.Services.AddScoped<VregistrarCuentaServices>(); 
 
 var app = builder.Build();
 

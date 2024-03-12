@@ -22,8 +22,28 @@ namespace Airepuro.Api.Services
                 mongoDB.GetCollection<Usuario>(databaseSettings.Value.Collections["Usuario"]);
         }
 
-        public async Task<List<Vlogin>> GetAsync() =>
-        await _vloginCollection.Find(_ => true).ToListAsync();
+        public async Task<List<Vlogin>> GetAsync()
+        {
+            try
+            {
+                var vlogins = await _vloginCollection.Find(_ => true).ToListAsync();
+                foreach (var vlogin in vlogins)
+                {
+                    var usuarios = await _usuarioCollection.FindAsync(new BsonDocument { { "_id", new ObjectId(vlogin.UsuarioId) } }).Result.ToListAsync();
+                    if (usuarios.Any())
+                    {
+                        var usuario = usuarios.First();
+                        vlogin.Usuario = usuario;
+
+                    }
+                }
+                return vlogins;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener los productos de la base de datos", ex);
+            }
+        }
         public async Task InsertVlogin(Vlogin VloginInsert)
         {
             await _vloginCollection.InsertOneAsync(VloginInsert);

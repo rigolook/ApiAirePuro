@@ -3,7 +3,7 @@ using MongoDB.Bson;
 
 namespace Airepuro.Api.Models
 {
-    public class Vlogin
+    public class VregistrarCuenta
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -11,13 +11,16 @@ namespace Airepuro.Api.Models
 
         [BsonElement("Titulo")]
         public string Titulo { get; set; } = string.Empty;
-        [BsonRepresentation(BsonType.ObjectId)]
-        [BsonElement("UsuarioId")]
-        public string UsuarioId { get; set; } = string.Empty;
-        
 
-        
+        [BsonElement("Mensaje")]
+        public string Mensaje { get; set; } = string.Empty;
+
+        [BsonElement("UsuarioId")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string UsuarioId { get; set; } = string.Empty;
+
         [BsonIgnore]
         public Usuario? Usuario { get; set; }
-    }
+       
+    } 
 }

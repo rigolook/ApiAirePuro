@@ -24,25 +24,45 @@ namespace Airepuro.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetVlogin()
         {
-            var Ventilador = await _vloginService.GetAsync();
-            return Ok(Ventilador);
+            try
+            {
+                var vlogin = await _vloginService.GetAsync();
+                return Ok(vlogin);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener los productos");
+                return StatusCode(500, "Error interno del servidor. Por favor, inténtalo de nuevo más tarde.");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> InsertVlogin([FromBody] Vlogin vloginToInsert)
         {
-            if (vloginToInsert == null)
-                return BadRequest();
-            if (vloginToInsert.Titulo != null)
-                ModelState.AddModelError("Titulo", "Ingrese un titulo para el registro.");
-            if (vloginToInsert.Nombre == string.Empty)
-                ModelState.AddModelError("Nombre de usuario", "Llene el campo de nombre.");
-            if (vloginToInsert.Contrasena != null)
-                ModelState.AddModelError("Contraseña", "Se recomienda colocar una contraseña");
+            try {
+                if (vloginToInsert == null)
+                    return BadRequest();
+                if (vloginToInsert.Titulo != null)
+                    ModelState.AddModelError("Titulo", "Ingrese un titulo para el registro.");
 
-            await _vloginService.InsertVlogin(vloginToInsert);
+                if (!string.IsNullOrEmpty(vloginToInsert.UsuarioId))
+                {
+                    var sensoraire = await _usuarioService.GetUsuarioById(vloginToInsert.UsuarioId);
+                    if (sensoraire == null)
+                        return BadRequest("No existe el usuario");
+                }
 
-            return Created("Created", true);
+                await _vloginService.InsertVlogin(vloginToInsert);
+
+
+
+                return Created("Created", vloginToInsert);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear el producto");
+                return StatusCode(500, "Error interno del servidor. Por favor, inténtalo de nuevo más tarde.");
+            }
         }
 
         [HttpDelete("ID")]
@@ -67,11 +87,6 @@ namespace Airepuro.Api.Controllers
                 ModelState.AddModelError("Id", "No debe dejar el id vacio.");
             if (vlonginToUpdate.Titulo != null)
                 ModelState.AddModelError("Titulo", "Ingrese un titulo para el registro.");
-            if (vlonginToUpdate.Nombre == string.Empty)
-                ModelState.AddModelError("Nombre de usuario", "Llene el campo de nombre.");
-            if (vlonginToUpdate.Contrasena != null)
-                ModelState.AddModelError("Contraseña", "Se recomienda colocar una contraseña");
-
             await _vloginService.UpdateVlogin(vlonginToUpdate);
 
             return Ok();
