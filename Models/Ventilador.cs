@@ -16,5 +16,11 @@ namespace Airepuro.Api.Models
         [BsonElement("Encendido")]
         public bool Encendido { get; set; }
 
+        [BsonElement("PinEnsendido")]
+        public string PinEnsendido { get; set; }
+
+        [BsonElement("PinRPM")]
+        public string PinRPM { get; set; }
+
     }
 }

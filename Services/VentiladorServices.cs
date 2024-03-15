@@ -43,5 +43,15 @@ namespace Airepuro.Api.Services
         {
             return await _ventiladorCollection.FindAsync(new BsonDocument { { "_id", new ObjectId(idToSearch) } }).Result.FirstAsync();
         }
+        public async Task UpdateVentiladorArduino(string id, string rpm)
+        {
+            var filter = Builders<Ventilador>.Filter.Eq(s => s.Id, id);
+            var update = Builders<Ventilador>.Update.Set(s => s.RPM, int.Parse(rpm)); // Convertimos rpm a int
+            await _ventiladorCollection.UpdateOneAsync(filter, update); // Utilizamos UpdateOneAsync para actualizar el documento de forma asincrónica
+        }
+         public List<Ventilador> Geta(){
+        return _ventiladorCollection.Find(_ => true).ToList();}
+
     }
 }
+

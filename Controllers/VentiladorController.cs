@@ -79,5 +79,11 @@ namespace Airepuro.Api.Controllers
             var ventiladores = await _ventiladorService.GetVentiladorById(idToSearch);
             return Ok(ventiladores);
         }
+        [HttpPut("VentiladorToUpdateArduino")]
+        public async Task<IActionResult> UpdateVentiladorArduino(string id, string rpm)
+        {
+            await _ventiladorService.UpdateVentiladorArduino(id, rpm);
+            return Ok();
+        }
     }
 }
