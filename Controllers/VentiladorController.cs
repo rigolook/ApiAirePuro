@@ -41,15 +41,13 @@ namespace Airepuro.Api.Controllers
             return Created("Created", true);
         }
 
-        [HttpDelete("ID")]
-        public async Task<IActionResult> DeleteVentilador(string idToDelete)
+        [HttpDelete("borrrar/{ID}")]
+        public async Task<IActionResult> DeleteVentilador(string ID)
         {
-            if (idToDelete == null)
+            if (ID == null)
                 return BadRequest();
-            if (idToDelete == string.Empty)
-                ModelState.AddModelError("Id", "No debe dejar el id vacio.");
 
-            await _ventiladorService.DeleteVentilador(idToDelete);
+            await _ventiladorService.DeleteVentilador(ID);
 
             return Ok();
         }
@@ -79,7 +77,8 @@ namespace Airepuro.Api.Controllers
             var ventiladores = await _ventiladorService.GetVentiladorById(idToSearch);
             return Ok(ventiladores);
         }
-        [HttpPut("VentiladorToUpdateArduino")]
+
+        [HttpPut("VentiladorToUpdateArduino/{id}/{rpm}")]
         public async Task<IActionResult> UpdateVentiladorArduino(string id, string rpm)
         {
             await _ventiladorService.UpdateVentiladorArduino(id, rpm);
